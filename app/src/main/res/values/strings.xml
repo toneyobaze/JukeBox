@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Juke Box</string>
+    <string name="songs">songs</string>
+    <string name="albums">albums</string>
+    <string name="artists">artists</string>
+    <string name="playlists">playlists</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="havana_camila_cabello_song">Havana (Camila Cabello song)</string>
+    <string name="todo">TODO</string>
+    <string name="_1_05">1:05</string>
+    <string name="_3_06">3:06</string>
+    <string name="camila_cabello">camila_cabello</string>
+
+</resources>
