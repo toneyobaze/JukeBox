@@ -1,16 +1,13 @@
 package com.oladapo.jukebox.Fragments;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -21,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 
 import com.oladapo.jukebox.MusicService;
@@ -33,9 +29,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.provider.MediaStore.MediaColumns.TITLE;
-import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
-public class songsFragment extends Fragment implements MediaController.MediaPlayerControl {
+public class songsFragment extends Fragment {
 
     private ArrayList<Song> songList;
     private MusicService musicSrv;
@@ -135,72 +130,6 @@ public class songsFragment extends Fragment implements MediaController.MediaPlay
             getActivity().startService(playIntent);
         }
     }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public int getDuration() {
-        return 0;
-    }
-
-    @Override
-    public int getCurrentPosition() {
-        return 0;
-    }
-
-    @Override
-    public void seekTo(int pos) {
-
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return false;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public boolean canPause() {
-        return false;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return false;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return false;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return 0;
-    }
-
-    /*private void playNext(){
-        musicSrv.playNext();
-        controller.show(0);
-    }
-
-    //play previous
-    private void playPrev(){
-        musicSrv.playPrev();
-        controller.show(0);
-    }*/
 
     private void songPicked(View view) {
 

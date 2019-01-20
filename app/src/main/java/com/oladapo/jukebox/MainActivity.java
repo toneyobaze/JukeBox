@@ -1,8 +1,13 @@
 package com.oladapo.jukebox;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.IBinder;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +18,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.MediaController;
+import android.widget.TextView;
 
 import com.oladapo.jukebox.Fragments.albumsFragment;
 import com.oladapo.jukebox.Fragments.artistsFragment;
@@ -24,10 +30,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MediaController.MediaPlayerControl {
+
+    public MainActivity() {
+    }
 
     ImageButton play, pause, play_main, pause_main,
-            shuffle_on, shuffle_off, repeat_on, repeat_off;
+            shuffle_on, shuffle_off, repeat_on, repeat_off, next, previous;
+
+    TextView current_song;
+    TextView current_artist;
+
     private TabLayout tabLayout;
     private int[] tabIcons = {
 
@@ -36,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.singer,
             R.drawable.playlist
     };
+
+    private MusicService musicSrv;
+    private boolean musicBound;
+    private Intent playIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-
                 return;
             }
         }
@@ -71,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
         shuffle_off = findViewById(R.id.shuffle_off);
         repeat_on = findViewById(R.id.repeat_on);
         repeat_off = findViewById(R.id.repeat_off);
+        next = findViewById(R.id.next);
+        previous = findViewById(R.id.previous);
+        current_song = findViewById(R.id.song_title);
+        current_artist = findViewById(R.id.songs_artist_name);
 
         play.setOnClickListener(new View.OnClickListener() {
 
@@ -79,14 +99,13 @@ public class MainActivity extends AppCompatActivity {
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
 
+                start();
+
                 if (play.getVisibility() == View.VISIBLE) {
                     play.setVisibility(View.GONE);
                     pause.setVisibility(View.VISIBLE);
-
                 }
-
             }
-
         });
 
         pause.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
                 shuffle_off.setVisibility(View.GONE);
                 shuffle_on.setVisibility(View.VISIBLE);
 
+                musicSrv.shuffleOn = false;
+                musicSrv.setShuffle();
+
                 if (shuffle_off.getVisibility() == View.GONE) {
                     shuffle_off.setVisibility(View.GONE);
                     shuffle_on.setVisibility(View.VISIBLE);
@@ -153,6 +175,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 shuffle_on.setVisibility(View.GONE);
                 shuffle_off.setVisibility(View.VISIBLE);
+
+                musicSrv.shuffleOn = true;
+                musicSrv.setShuffle();
 
                 if (shuffle_on.getVisibility() == View.GONE) {
                     shuffle_on.setVisibility(View.GONE);
@@ -186,7 +211,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playNext();
+            }
+        });
+
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playPrev();
+            }
+        });
     }
+
+    private ServiceConnection musicConnection = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicService.MusicBinder binder = (MusicService.MusicBinder)service;
+            //get service
+            musicSrv = binder.getService();
+            //pass list
+            musicBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicBound = false;
+        }
+    };
 
     private void setTabIcons() {
 
@@ -237,5 +293,93 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return null;
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(playIntent==null){
+            playIntent = new Intent(this, MusicService.class);
+            this.bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            this.startService(playIntent);
+        }
+    }
+
+    public void playNext() {
+        musicSrv.playNext();
+    }
+
+    public void playPrev() {
+        musicSrv.playPrev();
+    }
+
+    @Override
+    public void start() {
+        musicSrv.go();
+    }
+
+    @Override
+    public void pause() {
+        musicSrv.pausePlayer();
+    }
+
+    @Override
+    public int getDuration() {
+        if (musicSrv != null && musicBound && musicSrv.isPng())
+            return musicSrv.getDur();
+        else return 0;
+    }
+
+    @Override
+    public int getCurrentPosition() {
+        if (musicSrv != null && musicBound && musicSrv.isPng())
+            return musicSrv.getPosn();
+        else return 0;
+    }
+
+    @Override
+    public void seekTo(int pos) {
+        musicSrv.seek(pos);
+    }
+
+    @Override
+    public boolean isPlaying() {
+        if (musicSrv != null && musicBound)
+            return musicSrv.isPng();
+        return false;
+    }
+
+    @Override
+    public int getBufferPercentage() {
+        return 0;
+    }
+
+    @Override
+    public boolean canPause() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekBackward() {
+        return true;
+    }
+
+    @Override
+    public boolean canSeekForward() {
+        return true;
+    }
+
+    @Override
+    public int getAudioSessionId() {
+        return 0;
+    }
+
+    @Override
+    public void onDestroy() {
+
+        if (musicBound) musicSrv.unbindService(musicConnection);
+        this.stopService(playIntent);
+        musicSrv=null;
+        super.onDestroy();
     }
 }
