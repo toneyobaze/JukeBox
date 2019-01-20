@@ -1,6 +1,9 @@
 package com.oladapo.jukebox;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+                return;
+            }
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,8 +90,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
     }
-
-
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

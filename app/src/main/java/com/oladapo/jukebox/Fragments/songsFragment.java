@@ -24,7 +24,6 @@ import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
 
-import com.oladapo.jukebox.MusicController;
 import com.oladapo.jukebox.MusicService;
 import com.oladapo.jukebox.R;
 import com.oladapo.jukebox.Song;
@@ -64,21 +63,10 @@ public class songsFragment extends Fragment implements MediaController.MediaPlay
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Objects.requireNonNull(getActivity()),Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-
-                return;
-            }
-        }
-
         ListView songView = view.findViewById(R.id.song_list);
         songList = new ArrayList<>();
 
         getSongList();
-
-        setController(view);
 
         SongAdapter songAdt = new SongAdapter(getActivity(), songList);
         songView.setAdapter(songAdt);
@@ -201,16 +189,6 @@ public class songsFragment extends Fragment implements MediaController.MediaPlay
     @Override
     public int getAudioSessionId() {
         return 0;
-    }
-
-    private void setController(View view){
-
-        MusicController controller = new MusicController(getActivity());
-
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(view.findViewById(R.id.song_list));
-        controller.setEnabled(true);
-
     }
 
     /*private void playNext(){
