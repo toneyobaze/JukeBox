@@ -1,7 +1,6 @@
 package com.oladapo.jukebox;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -12,10 +11,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.oladapo.jukebox.Fragments.albumsFragment;
 import com.oladapo.jukebox.Fragments.artistsFragment;
@@ -26,11 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static android.support.v4.content.ContextCompat.checkSelfPermission;
-
-
 public class MainActivity extends AppCompatActivity {
 
+    ImageButton play, pause, play_main, pause_main;
     private TabLayout tabLayout;
     private int[] tabIcons = {
 
@@ -38,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.album,
             R.drawable.singer,
             R.drawable.playlist
-
     };
 
     @Override
@@ -67,6 +62,83 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         setTabIcons();
 
+        play = findViewById(R.id.toolbar_play_button);
+        pause = findViewById(R.id.toolbar_pause_button);
+        play_main = findViewById(R.id.play_button_main);
+        pause_main = findViewById(R.id.pause_button_main);
+
+        play.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                play.setVisibility(View.GONE);
+                pause.setVisibility(View.VISIBLE);
+
+                Toast.makeText(MainActivity.this, "Song Is now Playing", Toast.LENGTH_SHORT).show();
+
+                if (play_main.getVisibility() == View.VISIBLE) {
+                    play_main.setVisibility(View.GONE);
+                    pause_main.setVisibility(View.VISIBLE);
+
+                }
+
+            }
+
+        });
+
+        pause.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                pause.setVisibility(View.GONE);
+                play.setVisibility(View.VISIBLE);
+
+                Toast.makeText(MainActivity.this, "Song is Pause", Toast.LENGTH_SHORT).show();
+
+                if (pause_main.getVisibility() == View.VISIBLE) {
+                    pause_main.setVisibility(View.GONE);
+                    play_main.setVisibility(View.VISIBLE);
+
+                }
+
+            }
+
+        });
+
+        play_main.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                play_main.setVisibility(View.GONE);
+                pause_main.setVisibility(View.VISIBLE);
+
+                Toast.makeText(MainActivity.this, "Song Is now Playing", Toast.LENGTH_SHORT).show();
+
+                if (play.getVisibility() == View.VISIBLE) {
+                    play.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
+
+                }
+
+            }
+
+        });
+
+        pause_main.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                pause_main.setVisibility(View.GONE);
+                play_main.setVisibility(View.VISIBLE);
+
+                Toast.makeText(MainActivity.this, "Song is Pause", Toast.LENGTH_SHORT).show();
+
+                if (pause.getVisibility() == View.VISIBLE) {
+                    pause.setVisibility(View.GONE);
+                    play.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void setTabIcons() {
@@ -93,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+        final List<String> mFragmentTitleList = new ArrayList<>();
 
         ViewPagerAdapter(FragmentManager manager) {
             super(manager);
