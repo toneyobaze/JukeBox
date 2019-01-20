@@ -26,7 +26,8 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageButton play, pause, play_main, pause_main;
+    ImageButton play, pause, play_main, pause_main,
+            shuffle_on, shuffle_off, repeat_on, repeat_off;
     private TabLayout tabLayout;
     private int[] tabIcons = {
 
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
         pause = findViewById(R.id.toolbar_pause_button);
         play_main = findViewById(R.id.play_button_main);
         pause_main = findViewById(R.id.pause_button_main);
+        shuffle_on = findViewById(R.id.shuffle_on);
+        shuffle_off = findViewById(R.id.shuffle_off);
+        repeat_on = findViewById(R.id.repeat_on);
+        repeat_off = findViewById(R.id.repeat_off);
 
         play.setOnClickListener(new View.OnClickListener() {
 
@@ -74,11 +79,9 @@ public class MainActivity extends AppCompatActivity {
                 play.setVisibility(View.GONE);
                 pause.setVisibility(View.VISIBLE);
 
-                Toast.makeText(MainActivity.this, "Song Is now Playing", Toast.LENGTH_SHORT).show();
-
-                if (play_main.getVisibility() == View.VISIBLE) {
-                    play_main.setVisibility(View.GONE);
-                    pause_main.setVisibility(View.VISIBLE);
+                if (play.getVisibility() == View.VISIBLE) {
+                    play.setVisibility(View.GONE);
+                    pause.setVisibility(View.VISIBLE);
 
                 }
 
@@ -93,12 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 pause.setVisibility(View.GONE);
                 play.setVisibility(View.VISIBLE);
 
-                Toast.makeText(MainActivity.this, "Song is Pause", Toast.LENGTH_SHORT).show();
-
-                if (pause_main.getVisibility() == View.VISIBLE) {
-                    pause_main.setVisibility(View.GONE);
-                    play_main.setVisibility(View.VISIBLE);
-
+                if (pause.getVisibility() == View.VISIBLE) {
+                    pause.setVisibility(View.GONE);
+                    play.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -112,12 +112,9 @@ public class MainActivity extends AppCompatActivity {
                 play_main.setVisibility(View.GONE);
                 pause_main.setVisibility(View.VISIBLE);
 
-                Toast.makeText(MainActivity.this, "Song Is now Playing", Toast.LENGTH_SHORT).show();
-
-                if (play.getVisibility() == View.VISIBLE) {
-                    play.setVisibility(View.GONE);
-                    pause.setVisibility(View.VISIBLE);
-
+                if (play_main.getVisibility() == View.VISIBLE) {
+                    play_main.setVisibility(View.GONE);
+                    pause_main.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -131,11 +128,61 @@ public class MainActivity extends AppCompatActivity {
                 pause_main.setVisibility(View.GONE);
                 play_main.setVisibility(View.VISIBLE);
 
-                Toast.makeText(MainActivity.this, "Song is Pause", Toast.LENGTH_SHORT).show();
+                if (pause_main.getVisibility() == View.VISIBLE) {
+                    pause_main.setVisibility(View.GONE);
+                    play_main.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
-                if (pause.getVisibility() == View.VISIBLE) {
-                    pause.setVisibility(View.GONE);
-                    play.setVisibility(View.VISIBLE);
+        shuffle_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shuffle_off.setVisibility(View.GONE);
+                shuffle_on.setVisibility(View.VISIBLE);
+
+                if (shuffle_off.getVisibility() == View.GONE) {
+                    shuffle_off.setVisibility(View.GONE);
+                    shuffle_on.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        shuffle_on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shuffle_on.setVisibility(View.GONE);
+                shuffle_off.setVisibility(View.VISIBLE);
+
+                if (shuffle_on.getVisibility() == View.GONE) {
+                    shuffle_on.setVisibility(View.GONE);
+                    shuffle_off.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        repeat_on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                repeat_on.setVisibility(View.GONE);
+                repeat_off.setVisibility(View.VISIBLE);
+
+                if (repeat_on.getVisibility() == View.VISIBLE) {
+                    repeat_on.setVisibility(View.GONE);
+                    repeat_off.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        repeat_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                repeat_off.setVisibility(View.GONE);
+                repeat_on.setVisibility(View.VISIBLE);
+
+                if (repeat_off.getVisibility() == View.VISIBLE) {
+                    repeat_off.setVisibility(View.GONE);
+                    repeat_on.setVisibility(View.VISIBLE);
                 }
             }
         });
